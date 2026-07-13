@@ -1,17 +1,56 @@
 @import "tailwindcss";
 
 :root {
-  --background: #070a12;
-  --foreground: #f8fafc;
+  --background: #090604;
+  --foreground: #fff7ed;
+
+  --ember: #f97316;
+  --campfire: #fb923c;
+  --lantern: #facc15;
+  --charcoal: #120a06;
+  --smoke: #1c120c;
+}
+
+html {
+  min-height: 100%;
 }
 
 body {
-  background:
-    radial-gradient(circle at top left, rgba(245, 158, 11, 0.16), transparent 30%),
-    radial-gradient(circle at top right, rgba(59, 130, 246, 0.12), transparent 28%),
-    var(--background);
-  color: var(--foreground);
   min-height: 100vh;
+  color: var(--foreground);
+  background:
+    radial-gradient(circle at 18% 12%, rgba(250, 204, 21, 0.24), transparent 18%),
+    radial-gradient(circle at 22% 18%, rgba(249, 115, 22, 0.34), transparent 28%),
+    radial-gradient(circle at 78% 22%, rgba(194, 65, 12, 0.2), transparent 24%),
+    radial-gradient(circle at 70% 82%, rgba(251, 146, 60, 0.22), transparent 28%),
+    linear-gradient(135deg, rgba(12, 7, 5, 0.95), rgba(42, 18, 8, 0.88) 42%, rgba(6, 5, 4, 0.98)),
+    #090604;
+  background-attachment: fixed;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.3) 72%),
+    linear-gradient(90deg, rgba(255, 122, 24, 0.04), transparent 18%, transparent 82%, rgba(255, 122, 24, 0.04));
+  z-index: -1;
+}
+
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.18;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 64px 64px;
+  mask-image: radial-gradient(circle at center, black, transparent 78%);
+  z-index: -1;
 }
 
 button {
