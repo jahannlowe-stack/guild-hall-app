@@ -13,14 +13,16 @@ export default function Home() {
   return (
     <AppShell>
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="rounded-3xl border border-slate-800 bg-slate-950/70 p-6 shadow-xl shadow-black/20">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-amber-300">
+        <div className="rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
             Current Party Quest
           </p>
-          <h2 className="mt-3 text-3xl font-bold text-white">
+          <h2 className="mt-3 text-3xl font-bold text-orange-50">
             {activeTeamQuest.title}
           </h2>
-          <p className="mt-3 text-slate-300">{activeTeamQuest.description}</p>
+          <p className="mt-3 text-orange-100/75">
+            {activeTeamQuest.description}
+          </p>
 
           <div className="mt-6">
             <ProgressBar
@@ -29,37 +31,37 @@ export default function Home() {
             />
           </div>
 
-          <div className="mt-6 rounded-2xl border border-amber-300/30 bg-amber-300/10 p-5">
-            <p className="text-sm font-semibold text-amber-200">
+          <div className="mt-6 rounded-2xl border border-yellow-300/40 bg-orange-500/15 p-5 shadow-lg shadow-orange-950/40">
+            <p className="text-sm font-semibold text-yellow-200">
               Current unlocked reward
             </p>
-            <h3 className="mt-2 text-2xl font-bold text-white">
+            <h3 className="mt-2 text-2xl font-bold text-orange-50">
               {currentReward.name}: {currentReward.reward}
             </h3>
-            <p className="mt-2 text-sm text-slate-300">
+            <p className="mt-2 text-sm text-orange-100/75">
               {currentReward.description}
             </p>
           </div>
         </div>
 
-        <div className="rounded-3xl border border-slate-800 bg-slate-950/70 p-6 shadow-xl shadow-black/20">
-          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-blue-300">
+        <div className="rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-orange-300">
             Next Session
           </p>
-          <h2 className="mt-3 text-2xl font-bold text-white">
+          <h2 className="mt-3 text-2xl font-bold text-orange-50">
             {currentSession.title}
           </h2>
-          <div className="mt-4 space-y-3 text-sm text-slate-300">
+          <div className="mt-4 space-y-3 text-sm text-orange-100/75">
             <p>
-              <span className="font-semibold text-slate-100">When:</span>{" "}
+              <span className="font-semibold text-orange-50">When:</span>{" "}
               {currentSession.date}
             </p>
             <p>
-              <span className="font-semibold text-slate-100">Where:</span>{" "}
+              <span className="font-semibold text-orange-50">Where:</span>{" "}
               {currentSession.location}
             </p>
             <p>
-              <span className="font-semibold text-slate-100">Focus:</span>{" "}
+              <span className="font-semibold text-orange-50">Focus:</span>{" "}
               {currentSession.focusSkills.join(" + ")}
             </p>
           </div>
