@@ -17,15 +17,101 @@ export const currentSession = {
     "The party woke in a locked stone room with limited movement, strange mechanisms, and no clear way out alone. Progress came through short requests, role clarity, and staying steady under pressure.",
 };
 
+export const dailySoloQuestPool = [
+  {
+    id: "name-next-step",
+    title: "Name the Next Small Step",
+    category: "Daily Solo Quest",
+    skill: "Emotional Regulation",
+    description:
+      "At least once today, pause and identify the next small useful action. No details need to be recorded.",
+    reward: "+1 Guild Point",
+    teamContribution: "+1 Flame toward the party quest",
+  },
+  {
+    id: "ask-early",
+    title: "Ask Early",
+    category: "Daily Solo Quest",
+    skill: "Asking for Help",
+    description:
+      "Ask for help with something small before it becomes overwhelming. The app only tracks completion, not what happened.",
+    reward: "+1 Guild Point",
+    teamContribution: "+1 Flame toward the party quest",
+  },
+  {
+    id: "short-rest",
+    title: "Take a Short Rest",
+    category: "Daily Solo Quest",
+    skill: "Recovery",
+    description:
+      "Take one intentional pause today: water, food, breath, walk, quiet, or another safe reset.",
+    reward: "+1 Guild Point",
+    teamContribution: "+1 Flame toward the party quest",
+  },
+  {
+    id: "clear-request",
+    title: "Make a Clear Request",
+    category: "Daily Solo Quest",
+    skill: "Communication",
+    description:
+      "Practice one clear, direct request today. Keep it simple, respectful, and specific.",
+    reward: "+1 Guild Point",
+    teamContribution: "+1 Flame toward the party quest",
+  },
+  {
+    id: "share-the-load",
+    title: "Share the Load",
+    category: "Daily Solo Quest",
+    skill: "Collaboration",
+    description:
+      "Let someone take one small piece of the load, or offer to take one small piece for someone else.",
+    reward: "+1 Guild Point",
+    teamContribution: "+1 Flame toward the party quest",
+  },
+  {
+    id: "hold-the-line",
+    title: "Hold the Line",
+    category: "Daily Solo Quest",
+    skill: "Boundaries",
+    description:
+      "Use one small boundary today: pause, say no, ask for time, leave space, or choose not to escalate.",
+    reward: "+1 Guild Point",
+    teamContribution: "+1 Flame toward the party quest",
+  },
+  {
+    id: "repair-small-rupture",
+    title: "Repair a Small Rupture",
+    category: "Daily Solo Quest",
+    skill: "Repair",
+    description:
+      "If a small moment goes sideways, practice one repair move: clarify, apologize, reset, or recommit.",
+    reward: "+1 Guild Point",
+    teamContribution: "+1 Flame toward the party quest",
+  },
+];
+
+export function getDailySoloQuest(date = new Date()) {
+  const startOfYear = new Date(date.getFullYear(), 0, 0);
+  const difference = date.getTime() - startOfYear.getTime();
+  const oneDay = 1000 * 60 * 60 * 24;
+  const dayOfYear = Math.floor(difference / oneDay);
+
+  const questIndex = dayOfYear % dailySoloQuestPool.length;
+
+  return dailySoloQuestPool[questIndex];
+}
+
 export const activeTeamQuest = {
   title: "Keep the Fire Lit",
-  category: "Party Quest",
+  category: "Weekly Party Quest",
   skill: "Collaboration",
   description:
-    "Before the next session, each player can complete one small stabilizing action and contribute to the party quest. No details are collected.",
-  callToAction: "I contributed",
+    "Complete daily solo quests to add flame to the party meter. More total contributions unlock stronger shared rewards for the next session.",
+  callToAction: "I completed today’s quest",
   contributors: 3,
   partySize: 5,
+  totalFlames: 11,
+  weeklyGoal: 15,
 };
 
 export const rewardTiers = [
@@ -52,6 +138,35 @@ export const rewardTiers = [
     requiredContributors: 4,
     reward: "Shared d8 + story clue",
     description: "The party gains a stronger boost and receives one useful clue.",
+  },
+];
+
+export const flameRewardTiers = [
+  {
+    name: "Ember",
+    requiredFlames: 3,
+    reward: "+1 Guild Point for the party",
+    description: "The party kept the fire alive.",
+  },
+  {
+    name: "Hearth",
+    requiredFlames: 6,
+    reward: "Shared d4",
+    description: "The party may add 1d4 to one group check.",
+  },
+  {
+    name: "Bonfire",
+    requiredFlames: 10,
+    reward: "Shared d6",
+    description:
+      "The party may add 1d6 to one collaboration or non-violent problem-solving check.",
+  },
+  {
+    name: "Beacon",
+    requiredFlames: 15,
+    reward: "Shared d8 + story clue",
+    description:
+      "The party earns a stronger boost and receives one useful clue next session.",
   },
 ];
 
