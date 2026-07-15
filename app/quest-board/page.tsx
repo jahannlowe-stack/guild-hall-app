@@ -159,12 +159,6 @@ export default async function QuestBoardPage() {
     Math.round((weeklyPartyQuest.totalFlames / weeklyPartyQuest.weeklyGoal) * 100)
   );
 
-  const isUsingSupabase =
-    Boolean(dailySoloQuestFromSupabase) ||
-    Boolean(weeklyPartyQuestFromSupabase) ||
-    supabaseRewardTiers.length > 0 ||
-    Boolean(supabaseCurrentSession);
-
   return (
     <AppShell>
       <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
@@ -264,13 +258,6 @@ export default async function QuestBoardPage() {
             />
           </div>
         </div>
-      </section>
-
-      <section className="mt-6 rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-4 text-sm text-orange-100/70 shadow-xl shadow-black/30">
-        Content source:{" "}
-        <span className="font-semibold text-orange-50">
-          {isUsingSupabase ? "Supabase" : "local fallback data"}
-        </span>
       </section>
 
       <section className="mt-8 grid gap-5 md:grid-cols-2">
