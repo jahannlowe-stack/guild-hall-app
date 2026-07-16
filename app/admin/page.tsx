@@ -1,26 +1,15 @@
 import { AppShell } from "@/components/AppShell";
-import {
-  activeTeamQuest,
-  currentSession,
-  dailySoloQuestPool,
-  flameRewardTiers,
-  getDailySoloQuest,
-} from "@/lib/sample-data";
+import { getGuildContent } from "@/lib/guild-content";
 
-export default function AdminPage() {
-  const dailySoloQuest = getDailySoloQuest();
-
-  const flamePercentage = Math.min(
-    100,
-    Math.round((activeTeamQuest.totalFlames / activeTeamQuest.weeklyGoal) * 100)
-  );
-
-  const unlockedFlameTiers = flameRewardTiers.filter(
-    (tier) => activeTeamQuest.totalFlames >= tier.requiredFlames
-  );
-
-  const currentFlameReward =
-    unlockedFlameTiers[unlockedFlameTiers.length - 1] ?? flameRewardTiers[0];
+export default async function AdminPage() {
+  const {
+    dailySoloQuest,
+    weeklyPartyQuest,
+    rewardTiers,
+    session,
+    currentFlameReward,
+    flameProgressPercent,
+  } = await getGuildContent();
 
   return (
     <AppShell>
@@ -28,45 +17,50 @@ export default function AdminPage() {
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-200">
           Admin Preview
         </p>
-        <h2 className="mt-3 text-3xl font-bold text-orange-50">
+        <h1 className="mt-3 text-4xl font-bold text-orange-50">
           Guild Hall Control Room
-        </h2>
-        <p className="mt-3 max-w-3xl text-orange-100/80">
-          This is a mock admin page for planning future facilitator tools. It is
-          read-only right now. Buttons and forms below do not save changes yet.
+        </h1>
+        <p className="mt-4 max-w-4xl text-orange-100/80">
+          This is a read-only preview for future facilitator tools. It shows the
+          current app content and planned admin workflows, but it does not save
+          changes, manage participants, or store private participant details.
         </p>
       </section>
 
-      <section className="mt-8 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
+      <section className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
             Current Session
           </p>
-          <h3 className="mt-3 text-2xl font-bold text-orange-50">
-            {currentSession.title}
-          </h3>
+          <h2 className="mt-3 text-2xl font-bold text-orange-50">
+            {session.title}
+          </h2>
 
           <div className="mt-5 space-y-3 text-sm text-orange-100/75">
             <p>
               <span className="font-semibold text-orange-50">Date:</span>{" "}
-              {currentSession.date}
+              {session.date}
             </p>
             <p>
               <span className="font-semibold text-orange-50">Location:</span>{" "}
-              {currentSession.location}
+              {session.location}
             </p>
             <p>
-              <span className="font-semibold text-orange-50">Focus skills:</span>{" "}
-              {currentSession.focusSkills.join(" + ")}
+              <span className="font-semibold text-orange-50">
+                Focus skills:
+              </span>{" "}
+              {session.focusSkills.join(" + ")}
             </p>
           </div>
 
           <div className="mt-6 rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-5">
             <p className="text-sm font-semibold text-orange-200/80">
-              Session recap
+              Future session controls
             </p>
             <p className="mt-2 text-sm leading-6 text-orange-100/70">
-              {currentSession.recap}
+              Later, facilitators may update session dates, locations, focus
+              skills, and simple recap text here. For now, this page is
+              read-only.
             </p>
           </div>
 
@@ -90,9 +84,9 @@ export default function AdminPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
             Today’s Solo Quest
           </p>
-          <h3 className="mt-3 text-2xl font-bold text-orange-50">
+          <h2 className="mt-3 text-2xl font-bold text-orange-50">
             {dailySoloQuest.title}
-          </h3>
+          </h2>
 
           <div className="mt-3 flex flex-wrap gap-2">
             <span className="rounded-full border border-orange-400/20 bg-[#1c120c]/80 px-3 py-1 text-sm text-orange-100">
@@ -142,17 +136,17 @@ export default function AdminPage() {
         </div>
       </section>
 
-      <section className="mt-8 rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
+      <section className="mt-6 rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
           <div>
             <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
               Weekly Party Quest
             </p>
-            <h3 className="mt-3 text-2xl font-bold text-orange-50">
-              {activeTeamQuest.title}
-            </h3>
+            <h2 className="mt-3 text-2xl font-bold text-orange-50">
+              {weeklyPartyQuest.title}
+            </h2>
             <p className="mt-3 max-w-3xl text-orange-100/75">
-              {activeTeamQuest.description}
+              {weeklyPartyQuest.description}
             </p>
           </div>
 
@@ -169,16 +163,16 @@ export default function AdminPage() {
         <div className="mt-6">
           <div className="mb-2 flex items-center justify-between text-sm text-orange-100/75">
             <span>
-              {activeTeamQuest.totalFlames} of {activeTeamQuest.weeklyGoal}{" "}
+              {weeklyPartyQuest.totalFlames} of {weeklyPartyQuest.weeklyGoal}{" "}
               flames gathered
             </span>
-            <span>{flamePercentage}%</span>
+            <span>{flameProgressPercent}%</span>
           </div>
 
           <div className="h-4 overflow-hidden rounded-full bg-[#1c120c]">
             <div
               className="h-full rounded-full bg-gradient-to-r from-orange-700 via-orange-400 to-yellow-300"
-              style={{ width: `${flamePercentage}%` }}
+              style={{ width: `${flameProgressPercent}%` }}
             />
           </div>
         </div>
@@ -205,43 +199,55 @@ export default function AdminPage() {
         </div>
       </section>
 
-      <section className="mt-8 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+      <section className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
-                Quest Pool
+                Quest Content
               </p>
-              <h3 className="mt-3 text-2xl font-bold text-orange-50">
-                Daily Solo Quest Pool
-              </h3>
+              <h2 className="mt-3 text-2xl font-bold text-orange-50">
+                Future Quest Manager
+              </h2>
             </div>
 
             <div className="rounded-full border border-yellow-300/30 bg-orange-500/10 px-4 py-2 text-sm font-bold text-yellow-100">
-              {dailySoloQuestPool.length} quests
+              Read-only
             </div>
           </div>
 
-          <div className="mt-5 grid gap-3">
-            {dailySoloQuestPool.map((quest) => (
-              <div
-                key={quest.id}
-                className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4"
-              >
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
-                  <div>
-                    <h4 className="font-bold text-orange-50">{quest.title}</h4>
-                    <p className="mt-1 text-sm leading-6 text-orange-100/65">
-                      {quest.description}
-                    </p>
-                  </div>
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
+              <h3 className="font-bold text-orange-50">Daily solo quests</h3>
+              <p className="mt-2 text-sm leading-6 text-orange-100/65">
+                Later, this area can manage the daily solo quest pool,
+                categories, skills, rotation rules, and completion rewards.
+              </p>
+            </div>
 
-                  <span className="shrink-0 rounded-full border border-orange-400/20 bg-[#120905]/80 px-3 py-1 text-xs font-semibold text-orange-100/80">
-                    {quest.skill}
-                  </span>
-                </div>
-              </div>
-            ))}
+            <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
+              <h3 className="font-bold text-orange-50">Weekly party quests</h3>
+              <p className="mt-2 text-sm leading-6 text-orange-100/65">
+                Later, facilitators can choose the active weekly party quest and
+                set shared progress goals.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
+              <h3 className="font-bold text-orange-50">Skill tags</h3>
+              <p className="mt-2 text-sm leading-6 text-orange-100/65">
+                Quest skills can stay practical: regulation, communication,
+                repair, planning, boundaries, and teamwork.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
+              <h3 className="font-bold text-orange-50">Safe content only</h3>
+              <p className="mt-2 text-sm leading-6 text-orange-100/65">
+                Quest content should not ask participants to write disclosures,
+                trauma details, court information, or clinical notes.
+              </p>
+            </div>
           </div>
         </div>
 
@@ -249,13 +255,14 @@ export default function AdminPage() {
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
             Reward Tiers
           </p>
-          <h3 className="mt-3 text-2xl font-bold text-orange-50">
+          <h2 className="mt-3 text-2xl font-bold text-orange-50">
             Weekly Flame Rewards
-          </h3>
+          </h2>
 
           <div className="mt-5 space-y-3">
-            {flameRewardTiers.map((tier) => {
-              const unlocked = activeTeamQuest.totalFlames >= tier.requiredFlames;
+            {rewardTiers.map((tier) => {
+              const unlocked =
+                weeklyPartyQuest.totalFlames >= tier.requiredFlames;
 
               return (
                 <div
@@ -271,9 +278,9 @@ export default function AdminPage() {
                       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-orange-200/65">
                         {tier.requiredFlames}+ flames
                       </p>
-                      <h4 className="mt-1 font-bold text-orange-50">
+                      <h3 className="mt-1 font-bold text-orange-50">
                         {tier.name}
-                      </h4>
+                      </h3>
                     </div>
 
                     <span
@@ -300,17 +307,17 @@ export default function AdminPage() {
         </div>
       </section>
 
-      <section className="mt-8 rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
+      <section className="mt-6 rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
         <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
           Future Admin Controls
         </p>
-        <h3 className="mt-3 text-2xl font-bold text-orange-50">
+        <h2 className="mt-3 text-2xl font-bold text-orange-50">
           What this page will eventually manage
-        </h3>
+        </h2>
 
         <div className="mt-5 grid gap-4 md:grid-cols-3">
           <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
-            <h4 className="font-bold text-orange-50">Quest Builder</h4>
+            <h3 className="font-bold text-orange-50">Quest Builder</h3>
             <p className="mt-2 text-sm leading-6 text-orange-100/65">
               Create solo quests, party quests, skill tags, rewards, and
               rotation rules.
@@ -318,28 +325,29 @@ export default function AdminPage() {
           </div>
 
           <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
-            <h4 className="font-bold text-orange-50">Session Manager</h4>
+            <h3 className="font-bold text-orange-50">Session Manager</h3>
             <p className="mt-2 text-sm leading-6 text-orange-100/65">
               Update session dates, focus skills, recaps, and next-session
-              teasers.
+              information.
             </p>
           </div>
 
           <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
-            <h4 className="font-bold text-orange-50">Reward Console</h4>
+            <h3 className="font-bold text-orange-50">Reward Console</h3>
             <p className="mt-2 text-sm leading-6 text-orange-100/65">
-              Grant, redeem, expire, or adjust party rewards and individual
-              points.
+              Manage party rewards, flame tiers, reward availability, and
+              future redemption workflows.
             </p>
           </div>
         </div>
 
         <div className="mt-6 rounded-2xl border border-red-300/25 bg-red-950/30 p-5">
-          <h4 className="font-bold text-red-100">Not included by design</h4>
+          <h3 className="font-bold text-red-100">Not included by design</h3>
           <p className="mt-2 text-sm leading-6 text-red-50/80">
             This admin area should not become a place for clinical notes,
-            personal disclosures, court details, private messages, journals, or
-            participant narrative tracking.
+            personal disclosures, court details, custody details, private
+            messages, journals, participant narrative tracking, or mental health
+            symptom tracking.
           </p>
         </div>
       </section>
