@@ -10,18 +10,20 @@ const navItems = [
 
 export function AppShell({ children }: { children: React.ReactNode }) {
   return (
-    <main className="min-h-screen px-4 py-6 text-orange-50 sm:px-6 lg:px-8">
+    <main className="min-h-screen px-3 py-4 text-orange-50 sm:px-6 sm:py-6 lg:px-8">
       <div className="mx-auto max-w-6xl">
-        <header className="mb-8 rounded-3xl border border-orange-400/30 bg-[#120905]/85 p-6 shadow-2xl shadow-orange-950/50 backdrop-blur">
+        <header className="mb-6 rounded-3xl border border-orange-400/30 bg-[#120905]/85 p-5 shadow-2xl shadow-orange-950/50 backdrop-blur sm:mb-8 sm:p-6">
           <div className="flex flex-col gap-5 lg:flex-row lg:items-end lg:justify-between">
             <div>
-              <p className="mb-2 text-sm font-semibold uppercase tracking-[0.3em] text-yellow-300">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-yellow-300 sm:text-sm">
                 Guild Hall
               </p>
-              <h1 className="text-4xl font-bold tracking-tight text-orange-50 sm:text-5xl">
+
+              <h1 className="text-4xl font-bold leading-[0.95] tracking-tight text-orange-50 sm:text-5xl">
                 Private effort. Shared strength.
               </h1>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-orange-100/80 sm:text-base">
+
+              <p className="mt-4 max-w-2xl text-sm leading-6 text-orange-100/80 sm:text-base sm:leading-7">
                 A between-session companion for the D&D peer support program.
                 Track participation, unlock party rewards, and keep the fire lit
                 without collecting personal disclosures.
@@ -29,8 +31,8 @@ export function AppShell({ children }: { children: React.ReactNode }) {
             </div>
 
             <div className="rounded-2xl border border-orange-300/30 bg-[#1c120c]/90 px-4 py-3 text-sm text-orange-100/80 shadow-lg shadow-black/30">
-              <p className="font-semibold text-yellow-300">Prototype v0.1</p>
-              <p>No login • No database • Sample data only</p>
+              <p className="font-semibold text-yellow-300">Prototype v0.3</p>
+              <p>Database-backed content • No participant accounts yet</p>
             </div>
           </div>
 
