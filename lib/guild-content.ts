@@ -8,6 +8,7 @@ import { supabase } from "@/lib/supabase";
 
 type SupabaseQuest = {
   id: string;
+  campaign_id: string | null;
   title: string;
   category: string | null;
   skill: string | null;
@@ -21,6 +22,7 @@ type SupabaseQuest = {
 
 type SupabaseRewardTier = {
   id: string;
+  campaign_id: string | null;
   name: string;
   required_flames: number;
   reward: string | null;
@@ -30,6 +32,7 @@ type SupabaseRewardTier = {
 
 type SupabaseSession = {
   id: string;
+  campaign_id: string | null;
   title: string;
   session_date: string | null;
   location: string | null;
@@ -98,43 +101,101 @@ function getProgramLevel(campaign: SupabaseCampaign | null) {
   return campaign.program_levels;
 }
 
+function getDefaultCampaign() {
+  return {
+    id: "default-campaign",
+    name: "Rockland Ember Table",
+    status: "planning",
+    location: "Rockland, Maine",
+    meetingDay: "To be announced",
+    startDate: "To be announced",
+    programLevel: {
+      name: "Level 1 — Foundation",
+      slug: "level-1-foundation",
+      description:
+        "Introductory campaign level focused on stability, safety, basic communication, and participation.",
+    },
+  };
+}
+
+function formatCampaign(supabaseCampaign: SupabaseCampaign | null) {
+  if (!supabaseCampaign) {
+    return getDefaultCampaign();
+  }
+
+  const programLevel = getProgramLevel(supabaseCampaign);
+
+  return {
+    id: supabaseCampaign.id,
+    name: supabaseCampaign.name,
+    status: supabaseCampaign.status,
+    location: supabaseCampaign.location ?? "To be announced",
+    meetingDay: supabaseCampaign.meeting_day ?? "To be announced",
+    startDate: formatSessionDate(supabaseCampaign.start_date),
+    programLevel: programLevel
+      ? {
+          name: programLevel.name,
+          slug: programLevel.slug,
+          description: programLevel.description ?? "",
+        }
+      : {
+          name: "Level 1 — Foundation",
+          slug: "level-1-foundation",
+          description:
+            "Introductory campaign level focused on stability, safety, basic communication, and participation.",
+        },
+  };
+}
+
+async function getCurrentCampaign() {
+  const campaignsResult = await supabase
+    .from("campaigns")
+    .select(
+      `
+      id,
+      name,
+      status,
+      location,
+      meeting_day,
+      start_date,
+      program_levels (
+        name,
+        slug,
+        description
+      )
+    `
+    )
+    .order("created_at", { ascending: true })
+    .limit(1);
+
+  return (campaignsResult.data?.[0] ?? null) as SupabaseCampaign | null;
+}
+
 export async function getGuildContent() {
   const fallbackDailySoloQuest = getDailySoloQuest();
+  const supabaseCampaign = await getCurrentCampaign();
+  const campaign = formatCampaign(supabaseCampaign);
+  const campaignId =
+    campaign.id === "default-campaign" ? null : campaign.id;
 
-  const [questsResult, rewardTiersResult, sessionsResult, campaignsResult] =
+  const [questsResult, rewardTiersResult, sessionsResult] =
     await Promise.all([
       supabase
         .from("quests")
         .select("*")
         .eq("is_active", true)
+        .eq("campaign_id", campaignId)
         .order("sort_order", { ascending: true }),
       supabase
         .from("reward_tiers")
         .select("*")
+        .eq("campaign_id", campaignId)
         .order("sort_order", { ascending: true }),
       supabase
         .from("sessions")
         .select("*")
         .eq("is_current", true)
-        .limit(1),
-      supabase
-        .from("campaigns")
-        .select(
-          `
-          id,
-          name,
-          status,
-          location,
-          meeting_day,
-          start_date,
-          program_levels (
-            name,
-            slug,
-            description
-          )
-        `
-        )
-        .order("created_at", { ascending: true })
+        .eq("campaign_id", campaignId)
         .limit(1),
     ]);
 
@@ -143,46 +204,6 @@ export async function getGuildContent() {
     (rewardTiersResult.data ?? []) as SupabaseRewardTier[];
   const supabaseCurrentSession = (sessionsResult.data?.[0] ??
     null) as SupabaseSession | null;
-  const supabaseCampaign = (campaignsResult.data?.[0] ??
-    null) as SupabaseCampaign | null;
-
-  const programLevel = getProgramLevel(supabaseCampaign);
-
-  const campaign = supabaseCampaign
-    ? {
-        id: supabaseCampaign.id,
-        name: supabaseCampaign.name,
-        status: supabaseCampaign.status,
-        location: supabaseCampaign.location ?? "To be announced",
-        meetingDay: supabaseCampaign.meeting_day ?? "To be announced",
-        startDate: formatSessionDate(supabaseCampaign.start_date),
-        programLevel: programLevel
-          ? {
-              name: programLevel.name,
-              slug: programLevel.slug,
-              description: programLevel.description ?? "",
-            }
-          : {
-              name: "Level 1 — Foundation",
-              slug: "level-1-foundation",
-              description:
-                "Introductory campaign level focused on stability, safety, basic communication, and participation.",
-            },
-      }
-    : {
-        id: "default-campaign",
-        name: "Rockland Ember Table",
-        status: "planning",
-        location: "Rockland, Maine",
-        meetingDay: "To be announced",
-        startDate: "To be announced",
-        programLevel: {
-          name: "Level 1 — Foundation",
-          slug: "level-1-foundation",
-          description:
-            "Introductory campaign level focused on stability, safety, basic communication, and participation.",
-        },
-      };
 
   const dailySoloQuestFromSupabase = getDailyQuestFromPool(
     supabaseQuests.filter((quest) => quest.quest_type === "daily_solo")
