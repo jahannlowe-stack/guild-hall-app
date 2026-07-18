@@ -71,6 +71,20 @@ type SupabaseCampaignProgress = {
   is_current: boolean;
 };
 
+export type GuildCampaign = {
+  id: string;
+  name: string;
+  status: string;
+  location: string;
+  meetingDay: string;
+  startDate: string;
+  programLevel: {
+    name: string;
+    slug: string;
+    description: string;
+  };
+};
+
 function getDailyQuestFromPool(quests: SupabaseQuest[]) {
   if (quests.length === 0) {
     return null;
@@ -110,7 +124,7 @@ function getProgramLevel(campaign: SupabaseCampaign | null) {
   return campaign.program_levels;
 }
 
-function getDefaultCampaign() {
+function getDefaultCampaign(): GuildCampaign {
   return {
     id: "default-campaign",
     name: "Rockland Ember Table",
@@ -127,7 +141,7 @@ function getDefaultCampaign() {
   };
 }
 
-function formatCampaign(supabaseCampaign: SupabaseCampaign | null) {
+function formatCampaign(supabaseCampaign: SupabaseCampaign | null): GuildCampaign {
   if (!supabaseCampaign) {
     return getDefaultCampaign();
   }
@@ -156,7 +170,35 @@ function formatCampaign(supabaseCampaign: SupabaseCampaign | null) {
   };
 }
 
-async function getCurrentCampaign() {
+async function getCurrentCampaign(campaignId?: string) {
+  let query = supabase.from("campaigns").select(
+    `
+    id,
+    name,
+    status,
+    location,
+    meeting_day,
+    start_date,
+    program_levels (
+      name,
+      slug,
+      description
+    )
+  `
+  );
+
+  if (campaignId) {
+    query = query.eq("id", campaignId);
+  }
+
+  const campaignsResult = await query
+    .order("created_at", { ascending: true })
+    .limit(1);
+
+  return (campaignsResult.data?.[0] ?? null) as SupabaseCampaign | null;
+}
+
+export async function getCampaigns() {
   const campaignsResult = await supabase
     .from("campaigns")
     .select(
@@ -174,10 +216,11 @@ async function getCurrentCampaign() {
       )
     `
     )
-    .order("created_at", { ascending: true })
-    .limit(1);
+    .order("created_at", { ascending: true });
 
-  return (campaignsResult.data?.[0] ?? null) as SupabaseCampaign | null;
+  const campaigns = (campaignsResult.data ?? []) as SupabaseCampaign[];
+
+  return campaigns.map(formatCampaign);
 }
 
 async function getCurrentCampaignProgress(campaignId: string | null) {
@@ -195,9 +238,9 @@ async function getCurrentCampaignProgress(campaignId: string | null) {
   return (progressResult.data?.[0] ?? null) as SupabaseCampaignProgress | null;
 }
 
-export async function getGuildContent() {
+export async function getGuildContent(campaignIdOverride?: string) {
   const fallbackDailySoloQuest = getDailySoloQuest();
-  const supabaseCampaign = await getCurrentCampaign();
+  const supabaseCampaign = await getCurrentCampaign(campaignIdOverride);
   const campaign = formatCampaign(supabaseCampaign);
   const campaignId = campaign.id === "default-campaign" ? null : campaign.id;
 

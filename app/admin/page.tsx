@@ -1,16 +1,19 @@
 import { AppShell } from "@/components/AppShell";
-import { getGuildContent } from "@/lib/guild-content";
+import { getCampaigns, getGuildContent } from "@/lib/guild-content";
 
 export default async function AdminPage() {
-  const {
-    campaign,
-    dailySoloQuest,
-    weeklyPartyQuest,
-    rewardTiers,
-    session,
-    currentFlameReward,
-    flameProgressPercent,
-  } = await getGuildContent();
+  const [
+    {
+      campaign,
+      dailySoloQuest,
+      weeklyPartyQuest,
+      rewardTiers,
+      session,
+      currentFlameReward,
+      flameProgressPercent,
+    },
+    campaigns,
+  ] = await Promise.all([getGuildContent(), getCampaigns()]);
 
   return (
     <AppShell>
@@ -28,71 +31,157 @@ export default async function AdminPage() {
         </p>
       </section>
 
-      <section className="mt-6 rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
-          Current Campaign
-        </p>
+      <section className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
+          <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
+            Current Campaign
+          </p>
 
-        <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <h2 className="text-3xl font-bold text-orange-50">
-              {campaign.name}
-            </h2>
-            <p className="mt-3 max-w-3xl text-orange-100/75">
-              {campaign.programLevel.description}
-            </p>
+          <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+            <div>
+              <h2 className="text-3xl font-bold text-orange-50">
+                {campaign.name}
+              </h2>
+              <p className="mt-3 max-w-3xl text-orange-100/75">
+                {campaign.programLevel.description}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-yellow-300/35 bg-orange-500/15 px-5 py-4 shadow-lg shadow-orange-950/40">
+              <p className="text-sm font-semibold text-yellow-200">
+                Program level
+              </p>
+              <p className="mt-1 text-xl font-bold text-orange-50">
+                {campaign.programLevel.name}
+              </p>
+            </div>
           </div>
 
-          <div className="rounded-2xl border border-yellow-300/35 bg-orange-500/15 px-5 py-4 shadow-lg shadow-orange-950/40">
-            <p className="text-sm font-semibold text-yellow-200">
-              Program level
+          <div className="mt-6 grid gap-4 md:grid-cols-4">
+            <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
+              <p className="text-sm text-orange-200/70">Status</p>
+              <p className="mt-2 text-lg font-bold capitalize text-orange-50">
+                {campaign.status}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
+              <p className="text-sm text-orange-200/70">Location</p>
+              <p className="mt-2 text-lg font-bold text-orange-50">
+                {campaign.location}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
+              <p className="text-sm text-orange-200/70">Meeting day</p>
+              <p className="mt-2 text-lg font-bold text-orange-50">
+                {campaign.meetingDay}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
+              <p className="text-sm text-orange-200/70">Start date</p>
+              <p className="mt-2 text-lg font-bold text-orange-50">
+                {campaign.startDate}
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-5">
+            <p className="text-sm font-semibold text-orange-200/80">
+              Why this matters
             </p>
-            <p className="mt-1 text-xl font-bold text-orange-50">
-              {campaign.programLevel.name}
+            <p className="mt-2 text-sm leading-6 text-orange-100/70">
+              Guild Hall is being prepared for multiple campaigns, multiple DMs,
+              and multiple program levels. Eventually, Admin will select a
+              campaign first, then manage that campaign’s sessions, quests,
+              rewards, and weekly progress.
             </p>
           </div>
         </div>
 
-        <div className="mt-6 grid gap-4 md:grid-cols-4">
-          <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
-            <p className="text-sm text-orange-200/70">Status</p>
-            <p className="mt-2 text-lg font-bold capitalize text-orange-50">
-              {campaign.status}
-            </p>
+        <div className="rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
+                Campaign Selector
+              </p>
+              <h2 className="mt-3 text-2xl font-bold text-orange-50">
+                Available Campaigns
+              </h2>
+            </div>
+
+            <div className="rounded-full border border-yellow-300/30 bg-orange-500/10 px-4 py-2 text-sm font-bold text-yellow-100">
+              Read-only
+            </div>
           </div>
 
-          <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
-            <p className="text-sm text-orange-200/70">Location</p>
-            <p className="mt-2 text-lg font-bold text-orange-50">
-              {campaign.location}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
-            <p className="text-sm text-orange-200/70">Meeting day</p>
-            <p className="mt-2 text-lg font-bold text-orange-50">
-              {campaign.meetingDay}
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
-            <p className="text-sm text-orange-200/70">Start date</p>
-            <p className="mt-2 text-lg font-bold text-orange-50">
-              {campaign.startDate}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-6 rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-5">
-          <p className="text-sm font-semibold text-orange-200/80">
-            Why this matters
+          <p className="mt-4 text-sm leading-6 text-orange-100/70">
+            This panel confirms Admin can load the campaign list. Switching,
+            editing, and campaign creation will come later.
           </p>
-          <p className="mt-2 text-sm leading-6 text-orange-100/70">
-            Guild Hall is being prepared for multiple campaigns, multiple DMs,
-            and multiple program levels. Eventually, Admin will select a
-            campaign first, then manage that campaign’s sessions, quests,
-            rewards, and weekly progress.
-          </p>
+
+          <div className="mt-5 space-y-3">
+            {campaigns.length > 0 ? (
+              campaigns.map((availableCampaign) => {
+                const isCurrent = availableCampaign.id === campaign.id;
+
+                return (
+                  <div
+                    key={availableCampaign.id}
+                    className={`rounded-2xl border p-4 ${
+                      isCurrent
+                        ? "border-yellow-300/45 bg-orange-500/15"
+                        : "border-orange-400/15 bg-[#1c120c]/70"
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div>
+                        <h3 className="font-bold text-orange-50">
+                          {availableCampaign.name}
+                        </h3>
+                        <p className="mt-1 text-sm text-orange-100/65">
+                          {availableCampaign.programLevel.name}
+                        </p>
+                      </div>
+
+                      <span
+                        className={`rounded-full px-3 py-1 text-xs font-bold ${
+                          isCurrent
+                            ? "bg-yellow-300 text-[#120905]"
+                            : "bg-[#120905] text-orange-100/55"
+                        }`}
+                      >
+                        {isCurrent ? "Current" : availableCampaign.status}
+                      </span>
+                    </div>
+
+                    <div className="mt-3 grid gap-2 text-sm text-orange-100/65 sm:grid-cols-2">
+                      <p>
+                        <span className="font-semibold text-orange-100/85">
+                          Location:
+                        </span>{" "}
+                        {availableCampaign.location}
+                      </p>
+                      <p>
+                        <span className="font-semibold text-orange-100/85">
+                          Meeting:
+                        </span>{" "}
+                        {availableCampaign.meetingDay}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4">
+                <p className="text-sm text-orange-100/65">
+                  No campaigns found. The app will continue using fallback
+                  content.
+                </p>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
@@ -237,7 +326,6 @@ export default async function AdminPage() {
             </span>
             <span>{flameProgressPercent}%</span>
           </div>
-
           <div className="h-4 overflow-hidden rounded-full bg-[#1c120c]">
             <div
               className="h-full rounded-full bg-gradient-to-r from-orange-700 via-orange-400 to-yellow-300"
@@ -279,7 +367,6 @@ export default async function AdminPage() {
                 Future Campaign Manager
               </h2>
             </div>
-
             <div className="rounded-full border border-yellow-300/30 bg-orange-500/10 px-4 py-2 text-sm font-bold text-yellow-100">
               Read-only
             </div>
