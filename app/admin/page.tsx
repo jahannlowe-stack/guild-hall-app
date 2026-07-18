@@ -3,6 +3,7 @@ import { getGuildContent } from "@/lib/guild-content";
 
 export default async function AdminPage() {
   const {
+    campaign,
     dailySoloQuest,
     weeklyPartyQuest,
     rewardTiers,
@@ -21,10 +22,78 @@ export default async function AdminPage() {
           Guild Hall Control Room
         </h1>
         <p className="mt-4 max-w-4xl text-orange-100/80">
-          This is a read-only preview for future facilitator tools. It shows the
-          current app content and planned admin workflows, but it does not save
-          changes, manage participants, or store private participant details.
+          This is a read-only preview for future facilitator tools. It now shows
+          the current campaign context, but it does not save changes, manage
+          participants, or store private participant details.
         </p>
+      </section>
+
+      <section className="mt-6 rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
+        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
+          Current Campaign
+        </p>
+
+        <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <h2 className="text-3xl font-bold text-orange-50">
+              {campaign.name}
+            </h2>
+            <p className="mt-3 max-w-3xl text-orange-100/75">
+              {campaign.programLevel.description}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-yellow-300/35 bg-orange-500/15 px-5 py-4 shadow-lg shadow-orange-950/40">
+            <p className="text-sm font-semibold text-yellow-200">
+              Program level
+            </p>
+            <p className="mt-1 text-xl font-bold text-orange-50">
+              {campaign.programLevel.name}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-4">
+          <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
+            <p className="text-sm text-orange-200/70">Status</p>
+            <p className="mt-2 text-lg font-bold capitalize text-orange-50">
+              {campaign.status}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
+            <p className="text-sm text-orange-200/70">Location</p>
+            <p className="mt-2 text-lg font-bold text-orange-50">
+              {campaign.location}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
+            <p className="text-sm text-orange-200/70">Meeting day</p>
+            <p className="mt-2 text-lg font-bold text-orange-50">
+              {campaign.meetingDay}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-4">
+            <p className="text-sm text-orange-200/70">Start date</p>
+            <p className="mt-2 text-lg font-bold text-orange-50">
+              {campaign.startDate}
+            </p>
+          </div>
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-orange-400/15 bg-[#1c120c]/80 p-5">
+          <p className="text-sm font-semibold text-orange-200/80">
+            Why this matters
+          </p>
+          <p className="mt-2 text-sm leading-6 text-orange-100/70">
+            Guild Hall is being prepared for multiple campaigns, multiple DMs,
+            and multiple program levels. Eventually, Admin will select a
+            campaign first, then manage that campaign’s sessions, quests,
+            rewards, and weekly progress.
+          </p>
+        </div>
       </section>
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
@@ -204,10 +273,10 @@ export default async function AdminPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
-                Quest Content
+                Campaign-Aware Admin
               </p>
               <h2 className="mt-3 text-2xl font-bold text-orange-50">
-                Future Quest Manager
+                Future Campaign Manager
               </h2>
             </div>
 
@@ -218,34 +287,37 @@ export default async function AdminPage() {
 
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
-              <h3 className="font-bold text-orange-50">Daily solo quests</h3>
+              <h3 className="font-bold text-orange-50">Multiple campaigns</h3>
               <p className="mt-2 text-sm leading-6 text-orange-100/65">
-                Later, this area can manage the daily solo quest pool,
-                categories, skills, rotation rules, and completion rewards.
+                Admin will eventually select a campaign before editing sessions,
+                quests, rewards, or weekly progress.
               </p>
             </div>
 
             <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
-              <h3 className="font-bold text-orange-50">Weekly party quests</h3>
+              <h3 className="font-bold text-orange-50">Multiple DMs</h3>
               <p className="mt-2 text-sm leading-6 text-orange-100/65">
-                Later, facilitators can choose the active weekly party quest and
-                set shared progress goals.
+                Future role rules should let DMs manage assigned campaigns while
+                program admins can oversee the full structure.
               </p>
             </div>
 
             <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
-              <h3 className="font-bold text-orange-50">Skill tags</h3>
+              <h3 className="font-bold text-orange-50">
+                Three program levels
+              </h3>
               <p className="mt-2 text-sm leading-6 text-orange-100/65">
-                Quest skills can stay practical: regulation, communication,
-                repair, planning, boundaries, and teamwork.
+                Campaigns can belong to Level 1, Level 2, or Level 3 so quests
+                and supports can match the group’s skill stage.
               </p>
             </div>
 
             <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
               <h3 className="font-bold text-orange-50">Safe content only</h3>
               <p className="mt-2 text-sm leading-6 text-orange-100/65">
-                Quest content should not ask participants to write disclosures,
-                trauma details, court information, or clinical notes.
+                Admin tools should manage program content and progress, not
+                personal disclosures, journals, court details, or clinical
+                notes.
               </p>
             </div>
           </div>
@@ -317,26 +389,26 @@ export default async function AdminPage() {
 
         <div className="mt-5 grid gap-4 md:grid-cols-3">
           <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
-            <h3 className="font-bold text-orange-50">Quest Builder</h3>
+            <h3 className="font-bold text-orange-50">Campaign Manager</h3>
             <p className="mt-2 text-sm leading-6 text-orange-100/65">
-              Create solo quests, party quests, skill tags, rewards, and
-              rotation rules.
+              Create campaigns, assign program levels, set locations, and manage
+              campaign status.
             </p>
           </div>
 
           <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
-            <h3 className="font-bold text-orange-50">Session Manager</h3>
+            <h3 className="font-bold text-orange-50">DM Assignments</h3>
             <p className="mt-2 text-sm leading-6 text-orange-100/65">
-              Update session dates, focus skills, recaps, and next-session
-              information.
+              Assign DMs and facilitators to campaigns after authentication and
+              role permissions are designed.
             </p>
           </div>
 
           <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
-            <h3 className="font-bold text-orange-50">Reward Console</h3>
+            <h3 className="font-bold text-orange-50">Content Editor</h3>
             <p className="mt-2 text-sm leading-6 text-orange-100/65">
-              Manage party rewards, flame tiers, reward availability, and
-              future redemption workflows.
+              Manage sessions, quests, reward tiers, active weekly quests, and
+              flame goals for selected campaigns.
             </p>
           </div>
         </div>

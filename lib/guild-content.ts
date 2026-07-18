@@ -38,6 +38,27 @@ type SupabaseSession = {
   is_current: boolean;
 };
 
+type SupabaseCampaign = {
+  id: string;
+  name: string;
+  status: string;
+  location: string | null;
+  meeting_day: string | null;
+  start_date: string | null;
+  program_levels:
+    | {
+        name: string;
+        slug: string;
+        description: string | null;
+      }
+    | {
+        name: string;
+        slug: string;
+        description: string | null;
+      }[]
+    | null;
+};
+
 function getDailyQuestFromPool(quests: SupabaseQuest[]) {
   if (quests.length === 0) {
     return null;
@@ -65,31 +86,103 @@ function formatSessionDate(dateValue: string | null) {
   });
 }
 
+function getProgramLevel(campaign: SupabaseCampaign | null) {
+  if (!campaign?.program_levels) {
+    return null;
+  }
+
+  if (Array.isArray(campaign.program_levels)) {
+    return campaign.program_levels[0] ?? null;
+  }
+
+  return campaign.program_levels;
+}
+
 export async function getGuildContent() {
   const fallbackDailySoloQuest = getDailySoloQuest();
 
-  const [questsResult, rewardTiersResult, sessionsResult] = await Promise.all([
-    supabase
-      .from("quests")
-      .select("*")
-      .eq("is_active", true)
-      .order("sort_order", { ascending: true }),
-    supabase
-      .from("reward_tiers")
-      .select("*")
-      .order("sort_order", { ascending: true }),
-    supabase
-      .from("sessions")
-      .select("*")
-      .eq("is_current", true)
-      .limit(1),
-  ]);
+  const [questsResult, rewardTiersResult, sessionsResult, campaignsResult] =
+    await Promise.all([
+      supabase
+        .from("quests")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("reward_tiers")
+        .select("*")
+        .order("sort_order", { ascending: true }),
+      supabase
+        .from("sessions")
+        .select("*")
+        .eq("is_current", true)
+        .limit(1),
+      supabase
+        .from("campaigns")
+        .select(
+          `
+          id,
+          name,
+          status,
+          location,
+          meeting_day,
+          start_date,
+          program_levels (
+            name,
+            slug,
+            description
+          )
+        `
+        )
+        .order("created_at", { ascending: true })
+        .limit(1),
+    ]);
 
   const supabaseQuests = (questsResult.data ?? []) as SupabaseQuest[];
   const supabaseRewardTiers =
     (rewardTiersResult.data ?? []) as SupabaseRewardTier[];
   const supabaseCurrentSession = (sessionsResult.data?.[0] ??
     null) as SupabaseSession | null;
+  const supabaseCampaign = (campaignsResult.data?.[0] ??
+    null) as SupabaseCampaign | null;
+
+  const programLevel = getProgramLevel(supabaseCampaign);
+
+  const campaign = supabaseCampaign
+    ? {
+        id: supabaseCampaign.id,
+        name: supabaseCampaign.name,
+        status: supabaseCampaign.status,
+        location: supabaseCampaign.location ?? "To be announced",
+        meetingDay: supabaseCampaign.meeting_day ?? "To be announced",
+        startDate: formatSessionDate(supabaseCampaign.start_date),
+        programLevel: programLevel
+          ? {
+              name: programLevel.name,
+              slug: programLevel.slug,
+              description: programLevel.description ?? "",
+            }
+          : {
+              name: "Level 1 — Foundation",
+              slug: "level-1-foundation",
+              description:
+                "Introductory campaign level focused on stability, safety, basic communication, and participation.",
+            },
+      }
+    : {
+        id: "default-campaign",
+        name: "Rockland Ember Table",
+        status: "planning",
+        location: "Rockland, Maine",
+        meetingDay: "To be announced",
+        startDate: "To be announced",
+        programLevel: {
+          name: "Level 1 — Foundation",
+          slug: "level-1-foundation",
+          description:
+            "Introductory campaign level focused on stability, safety, basic communication, and participation.",
+        },
+      };
 
   const dailySoloQuestFromSupabase = getDailyQuestFromPool(
     supabaseQuests.filter((quest) => quest.quest_type === "daily_solo")
@@ -160,6 +253,7 @@ export async function getGuildContent() {
   );
 
   return {
+    campaign,
     dailySoloQuest,
     weeklyPartyQuest,
     rewardTiers,
