@@ -62,6 +62,15 @@ type SupabaseCampaign = {
     | null;
 };
 
+type SupabaseCampaignProgress = {
+  id: string;
+  campaign_id: string;
+  week_start: string;
+  total_flames: number;
+  weekly_goal: number;
+  is_current: boolean;
+};
+
 function getDailyQuestFromPool(quests: SupabaseQuest[]) {
   if (quests.length === 0) {
     return null;
@@ -171,14 +180,28 @@ async function getCurrentCampaign() {
   return (campaignsResult.data?.[0] ?? null) as SupabaseCampaign | null;
 }
 
+async function getCurrentCampaignProgress(campaignId: string | null) {
+  if (!campaignId) {
+    return null;
+  }
+
+  const progressResult = await supabase
+    .from("campaign_progress")
+    .select("*")
+    .eq("campaign_id", campaignId)
+    .eq("is_current", true)
+    .limit(1);
+
+  return (progressResult.data?.[0] ?? null) as SupabaseCampaignProgress | null;
+}
+
 export async function getGuildContent() {
   const fallbackDailySoloQuest = getDailySoloQuest();
   const supabaseCampaign = await getCurrentCampaign();
   const campaign = formatCampaign(supabaseCampaign);
-  const campaignId =
-    campaign.id === "default-campaign" ? null : campaign.id;
+  const campaignId = campaign.id === "default-campaign" ? null : campaign.id;
 
-  const [questsResult, rewardTiersResult, sessionsResult] =
+  const [questsResult, rewardTiersResult, sessionsResult, progress] =
     await Promise.all([
       supabase
         .from("quests")
@@ -197,6 +220,7 @@ export async function getGuildContent() {
         .eq("is_current", true)
         .eq("campaign_id", campaignId)
         .limit(1),
+      getCurrentCampaignProgress(campaignId),
     ]);
 
   const supabaseQuests = (questsResult.data ?? []) as SupabaseQuest[];
@@ -233,10 +257,14 @@ export async function getGuildContent() {
         description:
           weeklyPartyQuestFromSupabase.description ??
           activeTeamQuest.description,
-        totalFlames: activeTeamQuest.totalFlames,
-        weeklyGoal: activeTeamQuest.weeklyGoal,
+        totalFlames: progress?.total_flames ?? activeTeamQuest.totalFlames,
+        weeklyGoal: progress?.weekly_goal ?? activeTeamQuest.weeklyGoal,
       }
-    : activeTeamQuest;
+    : {
+        ...activeTeamQuest,
+        totalFlames: progress?.total_flames ?? activeTeamQuest.totalFlames,
+        weeklyGoal: progress?.weekly_goal ?? activeTeamQuest.weeklyGoal,
+      };
 
   const rewardTiers =
     supabaseRewardTiers.length > 0
