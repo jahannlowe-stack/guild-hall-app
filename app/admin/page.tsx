@@ -1,7 +1,17 @@
+import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { getCampaigns, getGuildContent } from "@/lib/guild-content";
 
-export default async function AdminPage() {
+type AdminPageProps = {
+  searchParams?: Promise<{
+    campaignId?: string;
+  }>;
+};
+
+export default async function AdminPage({ searchParams }: AdminPageProps) {
+  const resolvedSearchParams = await searchParams;
+  const selectedCampaignId = resolvedSearchParams?.campaignId;
+
   const [
     {
       campaign,
@@ -13,7 +23,10 @@ export default async function AdminPage() {
       flameProgressPercent,
     },
     campaigns,
-  ] = await Promise.all([getGuildContent(), getCampaigns()]);
+  ] = await Promise.all([
+    getGuildContent(selectedCampaignId),
+    getCampaigns(),
+  ]);
 
   return (
     <AppShell>
@@ -26,7 +39,7 @@ export default async function AdminPage() {
         </h1>
         <p className="mt-4 max-w-4xl text-orange-100/80">
           This is a read-only preview for future facilitator tools. It now shows
-          the current campaign context, but it does not save changes, manage
+          the selected campaign context, but it does not save changes, manage
           participants, or store private participant details.
         </p>
       </section>
@@ -34,7 +47,7 @@ export default async function AdminPage() {
       <section className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
         <div className="rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
-            Current Campaign
+            Selected Campaign
           </p>
 
           <div className="mt-4 flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
@@ -93,9 +106,9 @@ export default async function AdminPage() {
             </p>
             <p className="mt-2 text-sm leading-6 text-orange-100/70">
               Guild Hall is being prepared for multiple campaigns, multiple DMs,
-              and multiple program levels. Eventually, Admin will select a
-              campaign first, then manage that campaign’s sessions, quests,
-              rewards, and weekly progress.
+              and multiple program levels. Admin now loads content through the
+              selected campaign context so sessions, quests, rewards, and weekly
+              progress can remain campaign-specific.
             </p>
           </div>
         </div>
@@ -112,13 +125,14 @@ export default async function AdminPage() {
             </div>
 
             <div className="rounded-full border border-yellow-300/30 bg-orange-500/10 px-4 py-2 text-sm font-bold text-yellow-100">
-              Read-only
+              Link preview
             </div>
           </div>
 
           <p className="mt-4 text-sm leading-6 text-orange-100/70">
-            This panel confirms Admin can load the campaign list. Switching,
-            editing, and campaign creation will come later.
+            Select a campaign to preview its sessions, quests, rewards, and
+            weekly flame progress. Editing and campaign creation will come
+            later.
           </p>
 
           <div className="mt-5 space-y-3">
@@ -127,9 +141,10 @@ export default async function AdminPage() {
                 const isCurrent = availableCampaign.id === campaign.id;
 
                 return (
-                  <div
+                  <Link
                     key={availableCampaign.id}
-                    className={`rounded-2xl border p-4 ${
+                    href={`/admin?campaignId=${availableCampaign.id}`}
+                    className={`block rounded-2xl border p-4 transition hover:border-yellow-300/45 hover:bg-orange-500/10 ${
                       isCurrent
                         ? "border-yellow-300/45 bg-orange-500/15"
                         : "border-orange-400/15 bg-[#1c120c]/70"
@@ -152,7 +167,7 @@ export default async function AdminPage() {
                             : "bg-[#120905] text-orange-100/55"
                         }`}
                       >
-                        {isCurrent ? "Current" : availableCampaign.status}
+                        {isCurrent ? "Selected" : availableCampaign.status}
                       </span>
                     </div>
 
@@ -170,7 +185,7 @@ export default async function AdminPage() {
                         {availableCampaign.meetingDay}
                       </p>
                     </div>
-                  </div>
+                  </Link>
                 );
               })
             ) : (
@@ -182,6 +197,15 @@ export default async function AdminPage() {
               </div>
             )}
           </div>
+
+          {selectedCampaignId ? (
+            <Link
+              href="/admin"
+              className="mt-5 inline-flex rounded-full border border-orange-400/25 bg-[#1c120c]/80 px-4 py-2 text-sm font-semibold text-orange-100 transition hover:border-yellow-300/45 hover:text-yellow-100"
+            >
+              Return to default campaign
+            </Link>
+          ) : null}
         </div>
       </section>
 
@@ -376,7 +400,7 @@ export default async function AdminPage() {
             <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-5">
               <h3 className="font-bold text-orange-50">Multiple campaigns</h3>
               <p className="mt-2 text-sm leading-6 text-orange-100/65">
-                Admin will eventually select a campaign before editing sessions,
+                Admin can now select a campaign before previewing sessions,
                 quests, rewards, or weekly progress.
               </p>
             </div>
