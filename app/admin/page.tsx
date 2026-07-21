@@ -581,7 +581,33 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </p>
           </div>
         </div>
-
+<div className="mt-6 rounded-2xl border border-yellow-300/25 bg-orange-500/10 p-5">
+  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-yellow-200">
+    Suggested next build order
+  </p>
+  <ol className="mt-4 space-y-3 text-sm leading-6 text-orange-100/75">
+    <li>
+      <span className="font-bold text-orange-50">1. Campaign setup helpers:</span>{" "}
+      add safe read-only checks and seed scripts before building any write tools.
+    </li>
+    <li>
+      <span className="font-bold text-orange-50">2. Session editor:</span>{" "}
+      allow admins to update dates, locations, and focus skills for the selected campaign.
+    </li>
+    <li>
+      <span className="font-bold text-orange-50">3. Weekly flame controls:</span>{" "}
+      add simple buttons for adjusting current weekly progress without touching participant data.
+    </li>
+    <li>
+      <span className="font-bold text-orange-50">4. Quest/reward editor:</span>{" "}
+      manage public program content only: quests, reward tiers, and weekly party quest text.
+    </li>
+    <li>
+      <span className="font-bold text-orange-50">5. Roles and permissions:</span>{" "}
+      add authentication-aware rules before allowing multiple facilitators or DMs to make changes.
+    </li>
+  </ol>
+</div>
         <div className="mt-6 rounded-2xl border border-red-300/25 bg-red-950/30 p-5">
           <h3 className="font-bold text-red-100">Not included by design</h3>
           <p className="mt-2 text-sm leading-6 text-red-50/80">
