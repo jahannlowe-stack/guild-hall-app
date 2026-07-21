@@ -15,6 +15,7 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const [
     {
       campaign,
+      campaignHealth,
       dailySoloQuest,
       weeklyPartyQuest,
       rewardTiers,
@@ -208,7 +209,64 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           ) : null}
         </div>
       </section>
+<section className="mt-6 rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
+  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
+        Campaign Data Health
+      </p>
+      <h2 className="mt-3 text-2xl font-bold text-orange-50">
+        Selected Campaign Setup
+      </h2>
+    </div>
 
+    <div className="rounded-full border border-yellow-300/30 bg-orange-500/10 px-4 py-2 text-sm font-bold text-yellow-100">
+      Read-only
+    </div>
+  </div>
+
+  <p className="mt-4 text-sm leading-6 text-orange-100/70">
+    This check confirms whether the selected campaign has the minimum
+    content needed for the current player-facing app experience.
+  </p>
+
+  <div className="mt-5 grid gap-4 md:grid-cols-5">
+    <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4">
+      <p className="text-sm text-orange-200/70">Current session</p>
+      <p className="mt-2 text-lg font-bold text-orange-50">
+        {campaignHealth.hasCurrentSession ? "Ready" : "Missing"}
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4">
+      <p className="text-sm text-orange-200/70">Daily solo quests</p>
+      <p className="mt-2 text-lg font-bold text-orange-50">
+        {campaignHealth.dailySoloQuestCount}
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4">
+      <p className="text-sm text-orange-200/70">Weekly party quest</p>
+      <p className="mt-2 text-lg font-bold text-orange-50">
+        {campaignHealth.hasWeeklyPartyQuest ? "Ready" : "Missing"}
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4">
+      <p className="text-sm text-orange-200/70">Reward tiers</p>
+      <p className="mt-2 text-lg font-bold text-orange-50">
+        {campaignHealth.rewardTierCount}
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4">
+      <p className="text-sm text-orange-200/70">Weekly progress</p>
+      <p className="mt-2 text-lg font-bold text-orange-50">
+        {campaignHealth.hasCurrentProgress ? "Ready" : "Missing"}
+      </p>
+    </div>
+  </div>
+</section>
       <section className="mt-6 grid gap-6 lg:grid-cols-[0.9fr_1.1fr]">
         <div className="rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
           <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">

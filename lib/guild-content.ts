@@ -272,12 +272,25 @@ export async function getGuildContent(campaignIdOverride?: string) {
   const supabaseCurrentSession = (sessionsResult.data?.[0] ??
     null) as SupabaseSession | null;
 
-  const dailySoloQuestFromSupabase = getDailyQuestFromPool(
-    supabaseQuests.filter((quest) => quest.quest_type === "daily_solo")
+  const dailySoloQuests = supabaseQuests.filter(
+    (quest) => quest.quest_type === "daily_solo"
   );
+
+  const dailySoloQuestFromSupabase = getDailyQuestFromPool(dailySoloQuests);
 
   const weeklyPartyQuestFromSupabase =
     supabaseQuests.find((quest) => quest.quest_type === "weekly_party") ?? null;
+
+
+
+const campaignHealth = {
+  hasCurrentSession: Boolean(supabaseCurrentSession),
+  dailySoloQuestCount: dailySoloQuests.length,
+  hasWeeklyPartyQuest: Boolean(weeklyPartyQuestFromSupabase),
+  rewardTierCount: supabaseRewardTiers.length,
+  hasCurrentProgress: Boolean(progress),
+};
+  
 
   const dailySoloQuest = dailySoloQuestFromSupabase
     ? {
@@ -346,6 +359,7 @@ export async function getGuildContent(campaignIdOverride?: string) {
 
   return {
     campaign,
+    campaignHealth,
     dailySoloQuest,
     weeklyPartyQuest,
     rewardTiers,
