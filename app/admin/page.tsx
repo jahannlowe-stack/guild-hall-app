@@ -641,6 +641,32 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
     </li>
   </ol>
 </div>
+<div className="mt-6 rounded-2xl border border-orange-400/20 bg-[#1c120c]/70 p-5">
+  <p className="text-sm font-semibold uppercase tracking-[0.2em] text-yellow-200">
+    Admin safety boundaries
+  </p>
+  <div className="mt-4 grid gap-4 md:grid-cols-2">
+    <div>
+      <h3 className="font-bold text-orange-50">Okay to manage here</h3>
+      <ul className="mt-2 space-y-2 text-sm leading-6 text-orange-100/70">
+        <li>• Campaign names, locations, levels, and status</li>
+        <li>• Public session titles, dates, locations, and focus skills</li>
+        <li>• Quest text, reward tiers, and weekly flame goals</li>
+        <li>• Aggregate campaign readiness and progress checks</li>
+      </ul>
+    </div>
+
+    <div>
+      <h3 className="font-bold text-orange-50">Keep out of Admin</h3>
+      <ul className="mt-2 space-y-2 text-sm leading-6 text-orange-100/70">
+        <li>• Journals, disclosures, or private participant stories</li>
+        <li>• Court, custody, legal, or clinical details</li>
+        <li>• Mental health symptom tracking</li>
+        <li>• Private messages or facilitator notes about individuals</li>
+      </ul>
+    </div>
+  </div>
+</div>
         <div className="mt-6 rounded-2xl border border-red-300/25 bg-red-950/30 p-5">
           <h3 className="font-bold text-red-100">Not included by design</h3>
           <p className="mt-2 text-sm leading-6 text-red-50/80">
