@@ -642,6 +642,69 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   </ol>
 </div>
 <div className="mt-6 rounded-2xl border border-orange-400/20 bg-[#1c120c]/70 p-5">
+<div className="mt-6 rounded-2xl border border-yellow-300/25 bg-[#1c120c]/70 p-5">
+  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <p className="text-sm font-semibold uppercase tracking-[0.2em] text-yellow-200">
+        Authentication plan
+      </p>
+      <h3 className="mt-2 text-xl font-bold text-orange-50">
+        Email-only access for the pilot
+      </h3>
+    </div>
+
+    <div className="rounded-full border border-yellow-300/30 bg-orange-500/10 px-4 py-2 text-sm font-bold text-yellow-100">
+      No social login
+    </div>
+  </div>
+
+  <p className="mt-4 text-sm leading-6 text-orange-100/70">
+    Guild Hall should use email-only authentication for the September
+    pilot. Participants may use a separate email created just for Guild
+    Hall, but they should not be required to connect Google, Facebook,
+    Discord, Apple, Microsoft, or other social identity accounts.
+  </p>
+
+  <div className="mt-5 grid gap-4 md:grid-cols-3">
+    <div className="rounded-2xl border border-orange-400/15 bg-[#120905]/70 p-4">
+      <p className="text-sm font-semibold text-orange-50">
+        Project manager
+      </p>
+      <p className="mt-2 text-sm leading-6 text-orange-100/65">
+        Can access Admin, prepare campaigns, support the DM, and manage
+        public program content.
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-orange-400/15 bg-[#120905]/70 p-4">
+      <p className="text-sm font-semibold text-orange-50">DM</p>
+      <p className="mt-2 text-sm leading-6 text-orange-100/65">
+        Can access assigned campaign tools, update sessions, manage
+        weekly flames, and adjust public campaign content.
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-orange-400/15 bg-[#120905]/70 p-4">
+      <p className="text-sm font-semibold text-orange-50">Player</p>
+      <p className="mt-2 text-sm leading-6 text-orange-100/65">
+        Can access player-facing pages for their campaign without Admin
+        controls or access to private participant data.
+      </p>
+    </div>
+  </div>
+
+  <div className="mt-5 rounded-2xl border border-orange-400/15 bg-[#120905]/70 p-4">
+    <p className="text-sm font-semibold text-orange-50">
+      Pilot login copy
+    </p>
+    <p className="mt-2 text-sm leading-6 text-orange-100/65">
+      Guild Hall uses email-only login. You may use a separate email
+      made just for this program if that feels better for privacy. Use
+      one you can reliably access, because login links or codes will be
+      sent there. No social accounts are required.
+    </p>
+  </div>
+</div>
   <p className="text-sm font-semibold uppercase tracking-[0.2em] text-yellow-200">
     Admin safety boundaries
   </p>
