@@ -43,6 +43,39 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
           the selected campaign context, but it does not save changes, manage
           participants, or store private participant details.
         </p>
+        <div className="mt-6 grid gap-3 md:grid-cols-4">
+  <div className="rounded-2xl border border-yellow-300/25 bg-[#120905]/50 p-4">
+    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-yellow-200/80">
+      Version
+    </p>
+    <p className="mt-2 text-lg font-bold text-orange-50">v0.4.8</p>
+  </div>
+
+  <div className="rounded-2xl border border-yellow-300/25 bg-[#120905]/50 p-4">
+    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-yellow-200/80">
+      Mode
+    </p>
+    <p className="mt-2 text-lg font-bold text-orange-50">Read-only</p>
+  </div>
+
+  <div className="rounded-2xl border border-yellow-300/25 bg-[#120905]/50 p-4">
+    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-yellow-200/80">
+      Foundation
+    </p>
+    <p className="mt-2 text-lg font-bold text-orange-50">
+      Multi-campaign
+    </p>
+  </div>
+
+  <div className="rounded-2xl border border-yellow-300/25 bg-[#120905]/50 p-4">
+    <p className="text-xs font-semibold uppercase tracking-[0.2em] text-yellow-200/80">
+      Data safety
+    </p>
+    <p className="mt-2 text-lg font-bold text-orange-50">
+      Public content only
+    </p>
+  </div>
+</div>
       </section>
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
