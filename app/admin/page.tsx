@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
+import { AuthControl } from "@/components/AuthControl";
 import { getGuildAuthContext } from "@/lib/auth";
 import { getCampaigns, getGuildContent } from "@/lib/guild-content";
 
@@ -35,12 +36,19 @@ const [
   return (
     <AppShell>
       <section className="rounded-3xl border border-yellow-300/35 bg-orange-500/15 p-6 shadow-xl shadow-orange-950/40">
-        <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-200">
-          Admin Preview
-        </p>
-        <h1 className="mt-3 text-4xl font-bold text-orange-50">
-          Guild Hall Control Room
-        </h1>
+        
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+  <div>
+    <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-200">
+      Admin Preview
+    </p>
+    <h1 className="mt-3 text-4xl font-bold text-orange-50">
+      Guild Hall Control Room
+    </h1>
+  </div>
+
+  <AuthControl />
+</div>
         <p className="mt-4 max-w-4xl text-orange-100/80">
           This is a read-only preview for future facilitator tools. It now shows
           the selected campaign context, but it does not save changes, manage
