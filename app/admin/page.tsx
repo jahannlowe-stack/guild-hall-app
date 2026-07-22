@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
+import { getGuildAuthContext } from "@/lib/auth";
 import { getCampaigns, getGuildContent } from "@/lib/guild-content";
 
 type AdminPageProps = {
@@ -12,22 +13,24 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
   const resolvedSearchParams = await searchParams;
   const selectedCampaignId = resolvedSearchParams?.campaignId;
 
-  const [
-    {
-      campaign,
-      campaignHealth,
-      dailySoloQuest,
-      weeklyPartyQuest,
-      rewardTiers,
-      session,
-      currentFlameReward,
-      flameProgressPercent,
-    },
-    campaigns,
-  ] = await Promise.all([
-    getGuildContent(selectedCampaignId),
-    getCampaigns(),
-  ]);
+const [
+  {
+    campaign,
+    campaignHealth,
+    dailySoloQuest,
+    weeklyPartyQuest,
+    rewardTiers,
+    session,
+    currentFlameReward,
+    flameProgressPercent,
+  },
+  campaigns,
+  authContext,
+] = await Promise.all([
+  getGuildContent(selectedCampaignId),
+  getCampaigns(),
+  getGuildAuthContext(),
+]);
 
   return (
     <AppShell>
@@ -146,7 +149,64 @@ export default async function AdminPage({ searchParams }: AdminPageProps) {
             </p>
           </div>
         </div>
+<section className="mt-6 rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
+  <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div>
+      <p className="text-sm font-semibold uppercase tracking-[0.25em] text-yellow-300">
+        Auth Status
+      </p>
+      <h2 className="mt-3 text-2xl font-bold text-orange-50">
+        Current Access Context
+      </h2>
+    </div>
 
+    <div
+      className={`rounded-full border px-4 py-2 text-sm font-bold ${
+        authContext.canAccessAdmin
+          ? "border-yellow-300/30 bg-orange-500/10 text-yellow-100"
+          : "border-orange-400/20 bg-[#1c120c]/70 text-orange-100/55"
+      }`}
+    >
+      {authContext.canAccessAdmin ? "Admin-ready" : "No Admin access"}
+    </div>
+  </div>
+
+  <p className="mt-4 text-sm leading-6 text-orange-100/70">
+    This read-only panel confirms what the app currently knows about the
+    signed-in user. Route protection and login screens will be added
+    separately.
+  </p>
+
+  <div className="mt-5 grid gap-4 md:grid-cols-5">
+    <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4">
+      <p className="text-sm text-orange-200/70">Signed in</p>
+      <p className="mt-2 text-lg font-bold text-orange-50">
+        {authContext.isSignedIn ? "Yes" : "No"}
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4 md:col-span-2">
+      <p className="text-sm text-orange-200/70">Email</p>
+      <p className="mt-2 break-words text-lg font-bold text-orange-50">
+        {authContext.email ?? "Not signed in"}
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4">
+      <p className="text-sm text-orange-200/70">Profile role</p>
+      <p className="mt-2 text-lg font-bold capitalize text-orange-50">
+        {authContext.profile?.role ?? "None"}
+      </p>
+    </div>
+
+    <div className="rounded-2xl border border-orange-400/15 bg-[#1c120c]/70 p-4">
+      <p className="text-sm text-orange-200/70">Memberships</p>
+      <p className="mt-2 text-lg font-bold text-orange-50">
+        {authContext.memberships.length}
+      </p>
+    </div>
+  </div>
+</section>
         <div className="rounded-3xl border border-orange-400/20 bg-[#120905]/80 p-6 shadow-xl shadow-black/30">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
             <div>
