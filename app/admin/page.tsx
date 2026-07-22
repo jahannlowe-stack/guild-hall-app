@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { AuthControl } from "@/components/AuthControl";
 import { getGuildAuthContext } from "@/lib/auth";
@@ -32,7 +33,13 @@ const [
   getCampaigns(),
   getGuildAuthContext(),
 ]);
+if (!authContext.isSignedIn) {
+  redirect("/login");
+}
 
+if (!authContext.canAccessAdmin) {
+  redirect("/access-denied");
+}
   return (
     <AppShell>
       <section className="rounded-3xl border border-yellow-300/35 bg-orange-500/15 p-6 shadow-xl shadow-orange-950/40">
